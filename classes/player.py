@@ -21,21 +21,21 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += steps
 
     def jump(self):
-        self.yspeed -= self.jumpForce
+        self.yspeed = -self.jumpForce
 
     def update(self, dt):
-        #movement due to gravity
-        if self.grounded:
-            self.jump()
-            self.grounded = False
 
         #Make bottom of screen ground, for testing purposes
         if self.rect.y > 740 and self.yspeed > 0:
             self.grounded = True
             self.rect.y = 740
-            self.yspeed = 0
         else:
             self.yspeed += self.gravityConstant * dt
+
+        #jump
+        if self.grounded:
+            self.jump()
+            self.grounded = False
         
         #move the player down
         self.rect.y += self.yspeed
@@ -52,5 +52,4 @@ class Player(pygame.sprite.Sprite):
 
         #right
         if self.direction > 0:
-            print(self.frame)
             self.image = self.images[self.frame]
