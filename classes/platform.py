@@ -16,6 +16,7 @@ class Platform(pygame.sprite.Sprite):
 
     def die(self):
         self.kill()
+        del self
         return 0
 
 def platform(x, y, plat_list, type, length):

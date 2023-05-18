@@ -108,4 +108,3 @@ pygame.quit()
 
 #Things to do:
 #Improve collision (use the functions pygame actually gives us)
-#Figure out how to remove unused objects from memory

@@ -41,6 +41,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += self.speed * self.direction
         if self.rect.x > 480 or self.rect.x < 0:
             self.kill()
+            del self
 
     def die(self):
         self.kill()
