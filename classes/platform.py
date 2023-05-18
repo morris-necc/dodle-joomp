@@ -14,11 +14,14 @@ class Platform(pygame.sprite.Sprite):
         self.rect.x = xloc
         self.tx = self.ty = 32
 
-def platform(ploc, plat_list, type):
+    def die(self):
+        self.kill()
+        return 0
+
+def platform(x, y, plat_list, type, length):
     if type == 1:
         plat_dir = os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Palm Tree Island", "Sprites", "Terrain", "Terrain (32x32).png")
-    for platform in ploc:
-        for j in range(platform[2]):
-            plat = Platform((platform[0]+(j*32)),platform[1], plat_dir)
-            plat_list.add(plat)
+    for i in range(length):
+        plat = Platform(x+i*32, y, plat_dir)
+        plat_list.add(plat)
     return plat_list

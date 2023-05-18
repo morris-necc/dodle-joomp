@@ -3,8 +3,8 @@ import os
 import sys
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, xloc, yloc):
+        pygame.sprite.Sprite.__init__(self, )
         self.direction = 0
         self.gravityConstant = 12.5
         self.jumpForce = 10
@@ -14,6 +14,8 @@ class Player(pygame.sprite.Sprite):
         self.images = [pygame.image.load(os.path.join(jump_path, f"{i}.png")) for i in range(1, 4)]
         self.image = self.images[0]
         self.rect = self.image.get_rect()
+        self.rect.x = xloc
+        self.rect.y = yloc
         self.frame = 0
 
     def move(self, steps):
@@ -25,12 +27,8 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, dt):
 
-        #Make bottom of screen ground, for testing purposes
-        if self.rect.y > 740 and self.yspeed > 0:
-            self.grounded = True
-            self.rect.y = 740
-        else:
-            self.yspeed += self.gravityConstant * dt
+        #gravity
+        self.yspeed += self.gravityConstant * dt
 
         #jump
         if self.grounded:

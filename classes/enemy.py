@@ -1,7 +1,6 @@
 import pygame
 import os
 import sys
-import random
 ALPHA = (0, 255, 0)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xloc, yloc, img):
@@ -12,17 +11,20 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = yloc
         self.rect.x = xloc
+    
+    def die(self):
+        self.kill()
+        return 1
 
-def enemy(eloc, enem_list, type):
+def enemy(xloc, yloc, enem_list, type):
     if type == 1:
         enem_dirR = os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Shooter Traps", "Sprites", "Cannon", "Cannon Destroyed", "2R.png")
         enem_dirL = os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Shooter Traps", "Sprites", "Cannon", "Cannon Destroyed", "2L.png")
-    for enemy in eloc:
-        if enemy[0] == 0:
-            enem = Enemy((enemy[0]),enemy[1], enem_dirL)
-        elif enemy[0] == 480-30:
-            enem = Enemy((enemy[0]),enemy[1], enem_dirR)
-        enem_list.add(enem)
+    if xloc == 0:
+        enem = Enemy(xloc, yloc, enem_dirL)
+    elif xloc == 480-30:
+        enem = Enemy(xloc, yloc, enem_dirR)
+    enem_list.add(enem)
     return enem_list
 
 class Bullet(pygame.sprite.Sprite):
@@ -39,3 +41,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += self.speed * self.direction
         if self.rect.x > 480 or self.rect.x < 0:
             self.kill()
+
+    def die(self):
+        self.kill()
+        return 2

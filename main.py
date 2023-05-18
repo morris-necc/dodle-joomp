@@ -2,37 +2,35 @@ import pygame
 import classes.player as PLAYER
 import classes.platform as LEVEL
 import classes.enemy as ENEMY
-import os
-import sys
 import random
-
 
 #pygame setup
 pygame.init()
 screen = pygame.display.set_mode((480, 800))
 clock = pygame.time.Clock()
 running = True
-player = PLAYER.Player()
-player.rect.x = 0
-player.rect.y = 700
+
+#entities setup
+player = PLAYER.Player(0, 700)
 player_group = pygame.sprite.Group()
-ground_list = pygame.sprite.Group()
 plat_list = pygame.sprite.Group()
 enem_list = pygame.sprite.Group()
 bull_list = pygame.sprite.Group()
 player_group.add(player)
-max_height = 0 #score
 steps = 10
-ploc = []
-eloc = []
-tx   = 32
-ty   = 32
-i=0
-max_platforms = max_enemies = 4
-ground_dir = os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Palm Tree Island", "Sprites", "Terrain", "Terrain (32x32).png")
-while i <= (480/tx)+tx:
-    ground_list.add(LEVEL.Platform(i*tx, 800-ty, ground_dir))
-    i=i+1
+tx = ty = 32
+max_platforms = 6
+max_enemies = 4
+
+#camera
+max_height = 0
+offset = 0
+
+#initialize first entities
+plat_list = LEVEL.platform(0, 800-ty, plat_list, 1, 15)
+enem_list = ENEMY.enemy(random.choice([0,480-30]), 800-196-ty-32, enem_list, 1)
+plat_no = 1
+enemy_no = 1
 
 while running:
     #event handler
@@ -41,17 +39,16 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    #generarte platforms
-    if len(ploc) < max_platforms:
-        ploc.append((random.randint(0,480-tx), 800-196*(len(ploc)+1), random.randint(1,9)))
-        plat_list = LEVEL.platform(ploc, plat_list, 1)
+    #generate platforms
+    if plat_no < max_platforms:
+        plat_list = LEVEL.platform(random.randint(0,480-tx), plat_list.sprites()[-1].rect.y - 196, plat_list, 1, random.randint(1,9))
+        plat_no += 1
     #generate cannons
-    if len(eloc) < len(ploc):
-        eloc.append((random.choice([0,480-30]), 800-196*(len(ploc))-32))
-        enem_list = ENEMY.enemy(eloc, enem_list, 1)
+    if enemy_no < max_enemies:
+        enem_list = ENEMY.enemy(random.choice([0,480-30]), enem_list.sprites()[-1].rect.y - 196, enem_list, 1)
+        enemy_no += 1
 
     screen.fill((0, 0, 0))
-    ground_list.draw(screen)
     plat_list.draw(screen)
     enem_list.draw(screen)
     bull_list.draw(screen)
@@ -64,8 +61,8 @@ while running:
         
     #shoot bullets
     if len(bull_list) < 1:
-        for cannon in eloc:
-            bullet = ENEMY.Bullet(cannon[0],cannon[1])
+        for cannon in enem_list:
+            bullet = ENEMY.Bullet(cannon.rect.x, cannon.rect.y)
             bull_list.add(bullet)
 
     #move bullets
@@ -76,12 +73,31 @@ while running:
             if bullet.rect.x-60 <= player.rect.x <= bullet.rect.x+15:
                 print("collide") #what to do when collide?
     
-    #check for jump
+    #platform collision
     if player.yspeed >= 0: #if player is falling
-        for platform in ploc:
-            if  platform[0] - 47 - player.direction <= player.rect.x <=platform[0]+tx*platform[2] - 10 - player.direction and platform[1]-63 <=player.rect.y <= platform[1]-57:
+        for platform in plat_list:
+            if  platform.rect.x-47-player.direction <= player.rect.x <=platform.rect.x+tx-10-player.direction and platform.rect.y-63<=player.rect.y <= platform.rect.y-57:
                 player.grounded = True
 
+    #camera offset
+    entity_removed = [False, False, False]
+    if player.rect.y <= 400:
+        offset = 400 - player.rect.y
+        #offset every sprite
+        for sprite in plat_list.sprites() + enem_list.sprites() + bull_list.sprites() + player_group.sprites():
+            sprite.rect.y += offset
+            #clear offscreen entities
+            if sprite.rect.y > 800:
+                entity_removed[sprite.die()] = True
+        if entity_removed[0]:
+            plat_no -= 1
+        if entity_removed[1]:
+            enemy_no -= 1
+
+    if player.rect.y > 800:
+        player.kill()
+        print("GAME OVER")
+    
     clock.tick(60) #60 fps limit
     dt = clock.tick(60) / 1000
     player.update(dt)
@@ -89,3 +105,7 @@ while running:
     pygame.display.update()
 
 pygame.quit()
+
+#Things to do:
+#Improve collision (use the functions pygame actually gives us)
+#Figure out how to remove unused objects from memory
