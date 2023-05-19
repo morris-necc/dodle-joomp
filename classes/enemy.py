@@ -18,8 +18,8 @@ class Enemy(pygame.sprite.Sprite):
 
 def enemy(xloc, yloc, enem_list, type):
     if type == 1:
-        enem_dirR = os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Shooter Traps", "Sprites", "Cannon", "Cannon Destroyed", "2R.png")
-        enem_dirL = os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Shooter Traps", "Sprites", "Cannon", "Cannon Destroyed", "2L.png")
+        enem_dirR = os.path.join(sys.path[0], "assets", "sprites", "cannon",  "2R.png")
+        enem_dirL = os.path.join(sys.path[0], "assets", "sprites", "cannon", "2L.png")
     if xloc == 0:
         enem = Enemy(xloc, yloc, enem_dirL)
     elif xloc == 480-30:
@@ -30,7 +30,7 @@ def enemy(xloc, yloc, enem_list, type):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(sys.path[0], "assets", "sprites", "Treasure Hunters", "Treasure Hunters", "Shooter Traps", "Sprites", "Cannon", "Cannon Ball Idle", "1.png"))
+        self.image = pygame.image.load(os.path.join(sys.path[0], "assets", "sprites", "cannon", "1.png"))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.jumpForce = 10
         self.yspeed = 0
         self.grounded = True
-        jump_path = os.path.join(sys.path[0], "assets", "sprites", "Pirate Bomb", "Sprites", "1-Player-Bomb Guy", "4-Jump")
+        jump_path = os.path.join(sys.path[0], "assets", "sprites", "player")
         self.images = [pygame.image.load(os.path.join(jump_path, f"{i}.png")) for i in range(1, 4)]
         self.image = self.images[0]
         self.rect = pygame.Rect((xloc + 20, yloc), (37, 57))
