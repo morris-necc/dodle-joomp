@@ -3,11 +3,14 @@ import classes.player as PLAYER
 import classes.platform as LEVEL
 import classes.enemy as ENEMY
 import random
+import os
+import sys
 
 #pygame setup
 pygame.init()
 screen = pygame.display.set_mode((480, 800))
 clock = pygame.time.Clock()
+background = os.path.join(sys.path[0])
 running = True
 
 #entities setup
