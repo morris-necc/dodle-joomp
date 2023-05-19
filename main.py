@@ -11,6 +11,7 @@ pygame.init()
 screen = pygame.display.set_mode((480, 800))
 clock = pygame.time.Clock()
 running = True
+pygame.display.set_caption('Dodle Joomp')
 
 #background
 background_path = os.path.join(sys.path[0], "assets", "sprites", "background")
@@ -34,6 +35,7 @@ steps = 10
 tx = ty = 32
 max_platforms = 6
 max_enemies = 4
+pygame.display.set_icon(player.image)
 
 #camera and score
 offset = 0

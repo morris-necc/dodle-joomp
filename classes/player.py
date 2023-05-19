@@ -5,7 +5,7 @@ import random
 
 sys.path.append("..")
 sound_dir = [os.path.join(sys.path[0], "assets", "sound", "player", "death.mp3")]
-sound_dir += [os.path.join(sys.path[0], "assets", "sound", "player", f"jump{i}.mp3") for i in range(1,11)]
+sound_dir += [os.path.join(sys.path[0], "assets", "sound", "player", f"jump{i}.mp3") for i in range(1,4)]
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, xloc, yloc):
@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += steps
 
     def jump(self):
-        pygame.mixer.Sound.play(pygame.mixer.Sound(sound_dir[random.randint(1,10)]))
+        pygame.mixer.Sound.play(pygame.mixer.Sound(sound_dir[random.randint(1,3)]))
         self.yspeed = -self.jumpForce
 
     def update(self, dt):
