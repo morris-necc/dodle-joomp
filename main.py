@@ -3,6 +3,8 @@ import classes.player as PLAYER
 import classes.platform as LEVEL
 import classes.enemy as ENEMY
 import random
+import os
+import sys
 
 #pygame setup
 pygame.init()
@@ -35,6 +37,10 @@ plat_list = LEVEL.platform(0, 800-ty, plat_list, 1, 15)
 enem_list = ENEMY.enemy(random.choice([0,480-30]), 800-196-ty-32, enem_list, 1)
 plat_no = 1
 enemy_no = 1
+
+#bgm setup
+music = pygame.mixer.music.load(os.path.join(sys.path[0], "assets", "sound", "Pirate 3.mp3"))
+pygame.mixer.music.play(-1)
 
 while running:
     #event handler
@@ -75,6 +81,7 @@ while running:
         #collision detection
         if pygame.sprite.collide_rect(player, bullet):
             print("collide") #what to do when collide?
+            player.die()
     
     #platform collision
     if player.yspeed >= 0: #if player is falling
@@ -99,7 +106,7 @@ while running:
             enemy_no -= 1
 
     if player.rect.y > 800:
-        player.kill()
+        player.die()
         print("GAME OVER")
     
     clock.tick(60) #60 fps limit
