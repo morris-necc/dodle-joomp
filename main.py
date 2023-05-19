@@ -10,8 +10,18 @@ import sys
 pygame.init()
 screen = pygame.display.set_mode((480, 800))
 clock = pygame.time.Clock()
-background = os.path.join(sys.path[0])
 running = True
+
+#background
+background_path = os.path.join(sys.path[0], "assets", "sprites", "background")
+clouds = pygame.sprite.Group()
+for i in range(4):
+    cloud = pygame.sprite.Sprite()
+    cloud.image =  pygame.image.load(os.path.join(background_path, f"{i}.png")).convert_alpha()
+    cloud.rect = cloud.image.get_rect()
+    cloud.rect.x = 100 * i
+    cloud.rect.y = 700 - 150 *i
+    clouds.add(cloud)
 
 #entities setup
 player = PLAYER.Player(0, 700)
@@ -59,11 +69,18 @@ while running:
         enem_list = ENEMY.enemy(random.choice([0,480-30]), enem_list.sprites()[-1].rect.y - 196, enem_list, 1)
         enemy_no += 1
 
-    screen.fill((0, 0, 0))
+    #background
+    screen.fill((146, 169, 206))
+
+
+
+    #entities
+    clouds.draw(screen)
     plat_list.draw(screen)
     enem_list.draw(screen)
     bull_list.draw(screen)
 
+    #movement
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a] and player.rect.x > 0:
         player.move(-steps)
@@ -106,6 +123,7 @@ while running:
         if entity_removed[1]:
             enemy_no -= 1
 
+    #player death
     if player.rect.y > 800:
         player.die()
         print("GAME OVER")

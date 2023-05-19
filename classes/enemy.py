@@ -5,8 +5,7 @@ ALPHA = (0, 255, 0)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xloc, yloc, img):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join('images', img)).convert()
-        self.image.convert_alpha()
+        self.image = pygame.image.load(os.path.join('images', img)).convert_alpha()
         self.image.set_colorkey(ALPHA)
         self.rect = self.image.get_rect()
         self.rect.y = yloc
