@@ -9,7 +9,7 @@ class Platform(pygame.sprite.Sprite):
         self.image = pygame.image.load(os.path.join('images', img)).convert()
         self.image.convert_alpha()
         self.image.set_colorkey(ALPHA)
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect((xloc, yloc), (32, 2))
         self.rect.y = yloc
         self.rect.x = xloc
         self.tx = self.ty = 32

@@ -22,9 +22,13 @@ tx = ty = 32
 max_platforms = 6
 max_enemies = 4
 
-#camera
-max_height = 0
+#camera and score
 offset = 0
+score = 0
+font = pygame.font.Font("freesansbold.ttf", 32)
+text = font.render(f"Score: {score}", True, (0, 255, 0), (0, 0, 128))
+textRect = text.get_rect()
+textRect.topleft = (0, 0)
 
 #initialize first entities
 plat_list = LEVEL.platform(0, 800-ty, plat_list, 1, 15)
@@ -69,20 +73,20 @@ while running:
     for bullet in bull_list:
         bullet.update()
         #collision detection
-        if bullet.rect.y-60 <= player.rect.y <= bullet.rect.y+15:
-            if bullet.rect.x-60 <= player.rect.x <= bullet.rect.x+15:
-                print("collide") #what to do when collide?
+        if pygame.sprite.collide_rect(player, bullet):
+            print("collide") #what to do when collide?
     
     #platform collision
     if player.yspeed >= 0: #if player is falling
         for platform in plat_list:
-            if  platform.rect.x-47-player.direction <= player.rect.x <=platform.rect.x+tx-10-player.direction and platform.rect.y-63<=player.rect.y <= platform.rect.y-57:
+            if  pygame.sprite.collide_rect(player, platform) and player.rect.y <= platform.rect.y - 40:
                 player.grounded = True
 
     #camera offset
     entity_removed = [False, False, False]
     if player.rect.y <= 400:
         offset = 400 - player.rect.y
+        score += offset
         #offset every sprite
         for sprite in plat_list.sprites() + enem_list.sprites() + bull_list.sprites() + player_group.sprites():
             sprite.rect.y += offset
@@ -102,6 +106,8 @@ while running:
     dt = clock.tick(60) / 1000
     player.update(dt)
     player_group.draw(screen)
+    text = font.render(f"Score: {score}", True, (0, 255, 0), (0, 0, 128))
+    screen.blit(text, textRect)
     pygame.display.update()
 
 pygame.quit()
