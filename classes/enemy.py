@@ -1,6 +1,8 @@
 import pygame
 import os
 import sys
+from shapely.geometry import Polygon
+
 ALPHA = (0, 255, 0)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xloc, yloc, img):
@@ -33,15 +35,32 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.tx = self.image.get_width()
+        self.ty = self.image.get_height()
         self.speed = 5
         self.direction = 1 if x == 0 else -1
+        self.position = (self.rect.x + self.tx/2, self.rect.y + self.ty/2)
+        self.polygon = Polygon([
+            (self.rect.x, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y + self.ty),
+            (self.rect.x, self.rect.y + self.ty)
+        ])
 
     def update(self):
+        self.position = (self.rect.x + self.tx/2, self.rect.y + self.ty/2)
         self.rect.x += self.speed * self.direction
+
+        self.polygon = Polygon([
+            (self.rect.x, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y + self.ty),
+            (self.rect.x, self.rect.y + self.ty)
+        ])
         if self.rect.x > 480 or self.rect.x < 0:
             self.kill()
             del self
-
+    
     def die(self):
         self.kill()
         return 2

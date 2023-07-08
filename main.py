@@ -109,15 +109,14 @@ def main():
         for bullet in bull_list:
             bullet.update()
             #collision detection
-            if pygame.sprite.collide_rect(player, bullet):
-                print("collide") #what to do when collide?
+            if player.rect.colliderect(bullet.rect):
+                print("collide")
                 player.die()
         
         #platform collision
-        if player.yspeed >= 0: #if player is falling
-            for platform in plat_list:
-                if  pygame.sprite.collide_rect(player, platform) and player.rect.y <= platform.rect.y - 40:
-                    player.grounded = True
+        player.check_collision_platform(plat_list)
+        for platform in plat_list:
+            platform.update()
 
         #camera offset
         entity_removed = [False, False, False]
@@ -151,7 +150,8 @@ def main():
         clock.tick(60) #60 fps limit
         dt = clock.tick(60) / 1000
         player.update(dt)
-        player_group.draw(screen)
+        player.detect(plat_list, bull_list)
+        player.draw(screen)
         text = font.render(f"Score: {score}", True, (0, 255, 0), (0, 0, 128))
         screen.blit(text, textRect_score)
         text = font.render(f"Highscore: {highscore}", True, (0, 255, 0), (0, 0, 128))

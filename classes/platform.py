@@ -1,7 +1,8 @@
 import pygame
 import os
 import sys
-import random
+from shapely.geometry import Polygon
+
 ALPHA = (0, 255, 0)
 class Platform(pygame.sprite.Sprite):
     def __init__(self, xloc, yloc, img):
@@ -9,10 +10,25 @@ class Platform(pygame.sprite.Sprite):
         self.image = pygame.image.load(os.path.join('images', img)).convert()
         self.image.convert_alpha()
         self.image.set_colorkey(ALPHA)
-        self.rect = pygame.Rect((xloc, yloc), (32, 2))
+        self.rect = pygame.Rect((xloc, yloc), (32, 32))
         self.rect.y = yloc
         self.rect.x = xloc
         self.tx = self.ty = 32
+        self.position = (self.rect.x + self.tx/2, self.rect.y + self.ty/2)
+        self.polygon = Polygon([
+            (self.rect.x, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y + self.ty),
+            (self.rect.x, self.rect.y + self.ty)])
+        
+    def update(self):
+        self.position = (self.rect.x + self.tx/2, self.rect.y + self.ty/2)
+        self.polygon = Polygon([
+            (self.rect.x, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y),
+            (self.rect.x + self.tx, self.rect.y + self.ty),
+            (self.rect.x, self.rect.y + self.ty)
+        ])
 
     def die(self):
         self.kill()
