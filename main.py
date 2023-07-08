@@ -17,8 +17,8 @@ clock = pygame.time.Clock()
 pygame.display.set_caption('Dodle Joomp')
 
 #bgm setup
-music = pygame.mixer.music.load(os.path.join(sys.path[0], "assets", "sound", "Pirate 3.mp3"))
-pygame.mixer.music.play(-1)
+#music = pygame.mixer.music.load(os.path.join(sys.path[0], "assets", "sound", "Pirate 3.mp3"))
+#pygame.mixer.music.play(-1)
 
 def eval_genomes(genomes, config, score):
     for genome_id, genome in genomes:
@@ -59,7 +59,7 @@ def main(genomes, config):
 
     #initialize first entities
     plat_list = LEVEL.platform(0, 800-ty, plat_list, 1, 15)
-    enem_list = ENEMY.enemy(random.choice([0,480-30]), 800-196-ty-32, enem_list, 1)
+    #enem_list = ENEMY.enemy(random.choice([0,480-30]), 800-196-ty-32, enem_list, 1)
     plat_no = 0
 
     #background
@@ -107,8 +107,8 @@ def main(genomes, config):
             plat_no += 1
         
         #generate cannons
-        if len(enem_list.sprites()) < max_enemies:
-            enem_list = ENEMY.enemy(random.choice([0,480-30]), enem_list.sprites()[-1].rect.y - 196, enem_list, 1)
+        # if len(enem_list.sprites()) < max_enemies:
+        #     enem_list = ENEMY.enemy(random.choice([0,480-30]), enem_list.sprites()[-1].rect.y - 196, enem_list, 1)
 
         #background
         screen.fill((146, 169, 206))
@@ -145,6 +145,8 @@ def main(genomes, config):
                 player.move(-steps)
             elif action == 1 and player.rect.x < 420:
                 player.move(steps)
+            elif action == 2:
+                pass
 
             #platform collision
             if player.yspeed >= 0: #if player is falling
@@ -157,6 +159,8 @@ def main(genomes, config):
             if player.rect.y <= 400:
                 offset = 400 - player.rect.y
                 player.rect.y += offset
+                if player.score < player.score + int(offset):
+                    player.stagnation_timer = 0
                 player.score += offset
                 ge[id].fitness = player.score
                 if player.score > curr_score:
@@ -165,6 +169,14 @@ def main(genomes, config):
                     highscore = curr_score
                 if offset > t_offset:
                     t_offset = offset
+            else:
+                player.stagnation_timer += 1
+
+            if player.stagnation_timer > 500:
+                player.stagnation_timer = 0
+                players.pop(id)
+                networks.pop(id)
+                ge.pop(id)
 
             #death
             if player.rect.y > 800:
@@ -186,21 +198,21 @@ def main(genomes, config):
             plat_no -= 1
             
         #shoot bullets
-        if len(bull_list) < 1:
-            for cannon in enem_list:
-                bullet = ENEMY.Bullet(cannon.rect.x, cannon.rect.y)
-                bull_list.add(bullet)
+        # if len(bull_list) < 1:
+        #     for cannon in enem_list:
+        #         bullet = ENEMY.Bullet(cannon.rect.x, cannon.rect.y)
+        #         bull_list.add(bullet)
 
         #move bullets
-        for bullet in bull_list:
-            bullet.update()
-            #collision detection
-            for id, player in enumerate(players):
-                if pygame.sprite.collide_rect(player, bullet):
-                    players.pop(id)
-                    networks.pop(id)
-                    ge.pop(id)
-                    player.die()
+        # for bullet in bull_list:
+        #     bullet.update()
+        #     #collision detection
+        #     for id, player in enumerate(players):
+        #         if pygame.sprite.collide_rect(player, bullet):
+        #             players.pop(id)
+        #             networks.pop(id)
+        #             ge.pop(id)
+        #             player.die()
 
         #Restart when player dies            
         if player.dead:
@@ -211,10 +223,10 @@ def main(genomes, config):
             game_over = 1
 
         #without rays
-        player_group.draw(screen)
-        #with rays, slow
-        # for player in player_group.sprites():
-        #     player.draw(screen)
+        #player_group.draw(screen)
+        # with rays, slow
+        for player in player_group.sprites():
+            player.draw(screen)
         text = font.render(f"Score: {curr_score}", True, (0, 255, 0), (0, 0, 128))
         screen.blit(text, textRect_score)
         text = font.render(f"Highscore: {highscore}", True, (0, 255, 0), (0, 0, 128))
