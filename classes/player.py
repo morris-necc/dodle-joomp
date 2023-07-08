@@ -33,6 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.frame = 0
         self.rays = []
         self.rays_collided = []
+        self.score = 0
 
     def move(self, steps):
         if self.direction != steps: #if there is change in directions
@@ -182,7 +183,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = 1000
         self.rect.y = 400
         self.dead = True
-        return True        
+        return True   
     
     def check_collision_platform(self, plat_list):
         if self.yspeed >= 0: #if player is falling
@@ -193,20 +194,26 @@ class Player(pygame.sprite.Sprite):
 
     def detect(self, plat_list, bull_list):
         self.rays_collided = []
-        for rays in self.rays:
-            cast = False
-            for i, bullet in enumerate(bull_list):
-                for ray in rays:
-                    if ray.intersects(bullet.polygon) and not cast:
-                        self.rays_collided.append(-round(math.dist((self.rect.x + self.width/2, self.rect.y + self.height/2), bullet.position)))
-                        cast = True
-            
-            for i, platform in enumerate(plat_list):
-                for ray in rays:
-                    if ray.intersects(platform.polygon) and not cast:
-                        self.rays_collided.append(round(math.dist((self.rect.x + self.width/2, self.rect.y + self.height/2), platform.position)))
-                        cast = True
-            if not cast:
-                self.rays_collided.append(0)
+
+        if self.rays:
+            for rays in self.rays:
+                cast = False
+                for i, bullet in enumerate(bull_list):
+                    for ray in rays:
+                        if ray.intersects(bullet.polygon) and not cast:
+                            self.rays_collided.append(-round(math.dist((self.rect.x + self.width/2, self.rect.y + self.height/2), bullet.position)))
+                            cast = True
+                
+                for i, platform in enumerate(plat_list):
+                    for ray in rays:
+                        if ray.intersects(platform.polygon) and not cast:
+                            self.rays_collided.append(round(math.dist((self.rect.x + self.width/2, self.rect.y + self.height/2), platform.position)))
+                            cast = True
+                if not cast:
+                    self.rays_collided.append(0)
+        else:
+            self.rays_collided = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            return self.rays_collided
+
         return self.rays_collided 
         #array showing distance of object from player (-ve if bullet, +ve if platform). ordered starting from 1-o'clock hand to 12-o'clock
