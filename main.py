@@ -149,10 +149,9 @@ def main(genomes, config):
                 pass
 
             #platform collision
-            if player.yspeed >= 0: #if player is falling
-                for platform in plat_list:
-                    if  pygame.sprite.collide_rect(player, platform) and player.rect.y <= platform.rect.y - 40:
-                        player.grounded = True
+            player.check_collision_platform(plat_list)
+            for platform in plat_list:
+                platform.update()
 
             #camera offset
             platform_removed = False
