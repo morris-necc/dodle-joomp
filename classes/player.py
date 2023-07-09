@@ -190,7 +190,7 @@ class Player(pygame.sprite.Sprite):
             for platform in plat_list:
                 if  self.rect.colliderect(platform.rect):
                     self.grounded = True
-                    print(self.rays_collided) # just for checking
+                    #print(self.rays_collided) # just for checking
 
     def detect(self, plat_list, bull_list):
         self.rays_collided = []

@@ -61,7 +61,9 @@ def main(genomes, config):
     plat_list = LEVEL.platform(0, 800-ty, plat_list, 1, 15)
     enem_list = ENEMY.enemy(random.choice([0,480-30]), 800-196-ty-32, enem_list, 1)
     plat_no = 0
-
+    q= 0
+    starting =[32, 256, 64, 128, 32, 256]
+    width = [6, 6, 5, 4, 7, 4]
     #background
     background_path = os.path.join(sys.path[0], "assets", "sprites", "background")
     clouds = pygame.sprite.Group()
@@ -103,8 +105,12 @@ def main(genomes, config):
 
         #generate platforms
         if plat_no < max_platforms:
-            plat_list = LEVEL.platform(random.randint(0,480-tx), plat_list.sprites()[-1].rect.y - 196, plat_list, 1, random.randint(1,9))
+            plat_list = LEVEL.platform(random.randint(0,480-tx), plat_list.sprites()[-1].rect.y - 196, plat_list, 1, random.randint(6,9))
+            #plat_list = LEVEL.platform(starting[q], plat_list.sprites()[-1].rect.y - 196, plat_list, 1, width[q]) # fixed plat map
             plat_no += 1
+            #q+=1
+            #if q > 5:
+            #    q=0        
         
         #generate cannons
         if len(enem_list.sprites()) < max_enemies:
@@ -147,10 +153,9 @@ def main(genomes, config):
                 player.move(steps)
 
             #platform collision
-            if player.yspeed >= 0: #if player is falling
-                for platform in plat_list:
-                    if  pygame.sprite.collide_rect(player, platform) and player.rect.y <= platform.rect.y - 40:
-                        player.grounded = True
+            player.check_collision_platform(plat_list)
+            for platform in plat_list:
+                platform.update()
 
             #camera offset
             platform_removed = False
@@ -211,10 +216,10 @@ def main(genomes, config):
             game_over = 1
 
         #without rays
-        player_group.draw(screen)
+        #player_group.draw(screen)
         #with rays, slow
-        # for player in player_group.sprites():
-        #     player.draw(screen)
+        for player in player_group.sprites():
+            player.draw(screen)
         text = font.render(f"Score: {curr_score}", True, (0, 255, 0), (0, 0, 128))
         screen.blit(text, textRect_score)
         text = font.render(f"Highscore: {highscore}", True, (0, 255, 0), (0, 0, 128))
