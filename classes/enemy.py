@@ -38,7 +38,7 @@ class Bullet(pygame.sprite.Sprite):
         self.tx = self.image.get_width()
         self.ty = self.image.get_height()
         self.speed = 5
-        self.direction = 1 if x == 0 else -1
+        self.direction = 1 if x == -100 else -1
         self.position = (self.rect.x + self.tx/2, self.rect.y + self.ty/2)
         self.polygon = Polygon([
             (self.rect.x, self.rect.y),
@@ -57,7 +57,7 @@ class Bullet(pygame.sprite.Sprite):
             (self.rect.x + self.tx, self.rect.y + self.ty),
             (self.rect.x, self.rect.y + self.ty)
         ])
-        if self.rect.x > 480 or self.rect.x < 0:
+        if self.rect.x > 580 or self.rect.x < -100:
             self.kill()
             del self
     

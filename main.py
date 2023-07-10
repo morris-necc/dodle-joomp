@@ -196,7 +196,10 @@ def main(genomes, config):
         #shoot bullets
         if len(bull_list) < 1:
             for cannon in enem_list:
-                bullet = ENEMY.Bullet(cannon.rect.x, cannon.rect.y)
+                if cannon.rect.x == 0:
+                    bullet = ENEMY.Bullet(cannon.rect.x-100, cannon.rect.y)
+                elif cannon.rect.x == 480-30:
+                    bullet = ENEMY.Bullet(cannon.rect.x+100, cannon.rect.y)
                 bull_list.add(bullet)
 
         #move bullets
@@ -271,6 +274,6 @@ def run_genome(config_path, genome_path = "winner"):
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "config.ini")
-    run_genome(config_path)
+    run(config_path)
 
 #main()
