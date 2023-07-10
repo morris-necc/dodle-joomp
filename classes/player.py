@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.rays = []
         self.rays_collided = []
         self.score = 0
+        self.stagnation = 0
 
     def move(self, steps):
         if self.direction != steps: #if there is change in directions
@@ -42,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += steps
 
     def jump(self):
-        pygame.mixer.Sound.play(pygame.mixer.Sound(sound_dir[random.randint(1,3)]))
+        #pygame.mixer.Sound.play(pygame.mixer.Sound(sound_dir[random.randint(1,3)]))
         self.yspeed = -self.jumpForce
 
     def update(self, dt):
@@ -74,7 +75,6 @@ class Player(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
-        
         self.cast_rays()
 
         if DEBUGMODE:
@@ -178,7 +178,7 @@ class Player(pygame.sprite.Sprite):
         ]
 
     def die(self):
-        pygame.mixer.Sound.play(pygame.mixer.Sound(sound_dir[0]))
+        #pygame.mixer.Sound.play(pygame.mixer.Sound(sound_dir[0]))
         self.kill()
         self.rect.x = 1000
         self.rect.y = 400

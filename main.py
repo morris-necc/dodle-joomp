@@ -17,8 +17,8 @@ clock = pygame.time.Clock()
 pygame.display.set_caption('Dodle Joomp')
 
 #bgm setup
-music = pygame.mixer.music.load(os.path.join(sys.path[0], "assets", "sound", "Pirate 3.mp3"))
-pygame.mixer.music.play(-1)
+# music = pygame.mixer.music.load(os.path.join(sys.path[0], "assets", "sound", "Pirate 3.mp3"))
+# pygame.mixer.music.play(-1)
 
 def eval_genomes(genomes, config, score):
     for genome_id, genome in genomes:
@@ -61,9 +61,6 @@ def main(genomes, config):
     plat_list = LEVEL.platform(0, 800-ty, plat_list, 1, 15)
     enem_list = ENEMY.enemy(random.choice([0,480-30]), 800-196-ty-32, enem_list, 1)
     plat_no = 0
-    q= 0
-    starting =[32, 256, 64, 128, 32, 256]
-    width = [6, 6, 5, 4, 7, 4]
     #background
     background_path = os.path.join(sys.path[0], "assets", "sprites", "background")
     clouds = pygame.sprite.Group()
@@ -108,9 +105,6 @@ def main(genomes, config):
             plat_list = LEVEL.platform(random.randint(0,480-tx), plat_list.sprites()[-1].rect.y - 196, plat_list, 1, random.randint(6,9))
             #plat_list = LEVEL.platform(starting[q], plat_list.sprites()[-1].rect.y - 196, plat_list, 1, width[q]) # fixed plat map
             plat_no += 1
-            #q+=1
-            #if q > 5:
-            #    q=0        
         
         #generate cannons
         if len(enem_list.sprites()) < max_enemies:
@@ -161,8 +155,10 @@ def main(genomes, config):
             platform_removed = False
             if player.rect.y <= 400:
                 offset = 400 - player.rect.y
-                player.rect.y += offset
+                #player.rect.y += offset
                 player.score += offset
+                if player.score < player.score + offset:
+                    player.stagnation =0
                 ge[id].fitness = player.score
                 if player.score > curr_score:
                     curr_score = player.score
@@ -170,6 +166,13 @@ def main(genomes, config):
                     highscore = curr_score
                 if offset > t_offset:
                     t_offset = offset
+
+            player.stagnation += 1
+            if player.stagnation >= 500:
+                players.pop(id)
+                networks.pop(id)
+                ge.pop(id)
+                player.die()
 
             #death
             if player.rect.y > 800:
@@ -179,7 +182,7 @@ def main(genomes, config):
                 player.die()
 
         #offset every sprite
-        for sprite in plat_list.sprites() + enem_list.sprites() + bull_list.sprites():
+        for sprite in plat_list.sprites() + enem_list.sprites() + bull_list.sprites() + player_group.sprites():
             #problem : everything is being offset cuz of every player
             sprite.rect.y += t_offset
             #clear offscreen entities
@@ -208,15 +211,15 @@ def main(genomes, config):
                     player.die()
 
         #Restart when player dies            
-        if player.dead:
-            text = font.render("Press R to Respawn", False, (255, 255, 255))
-            rect = text.get_rect()
-            rect.center = screen.get_rect().center
-            screen.blit(text, rect)
-            game_over = 1
+        # if player.dead:
+        #     text = font.render("Press R to Respawn", False, (255, 255, 255))
+        #     rect = text.get_rect()
+        #     rect.center = screen.get_rect().center
+        #     screen.blit(text, rect)
+        #     game_over = 1
 
         #without rays
-        #player_group.draw(screen)
+        # player_group.draw(screen)
         #with rays, slow
         for player in player_group.sprites():
             player.draw(screen)
@@ -262,12 +265,12 @@ def run_genome(config_path, genome_path = "winner"):
 
     genomes = [(1, genome)]
 
-    run(genomes, config)
+    main(genomes, config)
 
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "config.ini")
-    run(config_path)
+    run_genome(config_path)
 
 #main()
